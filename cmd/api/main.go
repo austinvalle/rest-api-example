@@ -26,7 +26,8 @@ func main() {
 
 	productEndpoint := productEndpoint{db: db}
 
-	r.Get("/api/products/{id:\\d+}", productEndpoint.getProductById)
+	r.Get("/products/{id:\\d+}", productEndpoint.getProductById)
+	r.Put("/products/{id:\\d+}/price", productEndpoint.updateProductPriceById)
 
 	// TODO: add env variable
 	port := 3000

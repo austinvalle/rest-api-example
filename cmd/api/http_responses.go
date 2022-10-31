@@ -16,6 +16,13 @@ func (e *ErrResponse) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
+func ErrBadRequest(err error) render.Renderer {
+	return &ErrResponse{
+		HTTPStatusCode: 400,
+		ErrorText:      err.Error(),
+	}
+}
+
 func ErrNotFound(err error) render.Renderer {
 	return &ErrResponse{
 		HTTPStatusCode: 404,

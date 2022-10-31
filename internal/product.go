@@ -37,6 +37,16 @@ func GetProduct(id string, db *clover.DB) (*Product, error) {
 	return mergeProductAndPriceData(id, productData, pricingData), nil
 }
 
+func UpdateProduct(id string, price *Price, db *clover.DB) error {
+	// Check if product exists before updating price
+	_, err := getProductDataFromExternal(id)
+	if err != nil {
+		return err
+	}
+
+	return updatePricingData(id, price, db)
+}
+
 func mergeProductAndPriceData(id string, productData *productData, pricingData *pricingData) *Product {
 	return &Product{
 		Id:   id,
