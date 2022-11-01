@@ -93,7 +93,7 @@ func InitDB() (PricingDatabase, error) {
 		return nil, err
 	}
 
-	exists, _ := db.Exists(clover.NewQuery(pricingCollection))
+	exists, _ := db.HasCollection(pricingCollection)
 
 	if !exists {
 		err = seedDB(db)
