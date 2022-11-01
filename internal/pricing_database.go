@@ -38,7 +38,6 @@ func (pdb pricingDatabase) GetPricingById(id string) (*ProductPriceDocument, err
 		return nil, err
 	}
 
-	// TODO: feels weird
 	if doc == nil {
 		return &ProductPriceDocument{}, nil
 	}
