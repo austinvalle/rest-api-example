@@ -8,11 +8,10 @@ import (
 	"github.com/austinvalle/rest-api-example/internal"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
-	"github.com/ostafen/clover/v2"
 )
 
 type productEndpoint struct {
-	db *clover.DB
+	db internal.PricingDatabase
 }
 
 type priceRequest struct {

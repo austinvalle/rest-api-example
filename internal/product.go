@@ -2,8 +2,6 @@ package internal
 
 import (
 	"strconv"
-
-	"github.com/ostafen/clover/v2"
 )
 
 type Product struct {
@@ -23,13 +21,13 @@ func (c Currency) MarshalJSON() ([]byte, error) {
 	return []byte(strconv.FormatFloat(float64(c), 'f', 2, 64)), nil
 }
 
-func GetProduct(id string, db *clover.DB) (*Product, error) {
+func GetProduct(id string, db PricingDatabase) (*Product, error) {
 	productData, err := getProductDataFromExternal(id)
 	if err != nil {
 		return nil, err
 	}
 
-	pricingData, err := getPricingData(id, db)
+	pricingData, err := db.GetPricingById(id)
 	if err != nil {
 		return nil, err
 	}
@@ -37,17 +35,21 @@ func GetProduct(id string, db *clover.DB) (*Product, error) {
 	return mergeProductAndPriceData(id, productData, pricingData), nil
 }
 
-func UpdateProduct(id string, price *Price, db *clover.DB) error {
+func UpdateProduct(id string, price *Price, db PricingDatabase) error {
 	// Check if product exists before updating price
 	_, err := getProductDataFromExternal(id)
 	if err != nil {
 		return err
 	}
 
-	return updatePricingData(id, price, db)
+	return db.UpsertPricing(ProductPriceDocument{
+		ProductId:    id,
+		Value:        float64(price.Value),
+		CurrencyCode: price.CurrencyCode,
+	})
 }
 
-func mergeProductAndPriceData(id string, productData *productData, pricingData *pricingData) *Product {
+func mergeProductAndPriceData(id string, productData *productData, pricingData *ProductPriceDocument) *Product {
 	return &Product{
 		Id:   id,
 		Name: productData.Item.ProductDescription.Title,
