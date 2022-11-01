@@ -2,12 +2,15 @@ package internal
 
 import (
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/ostafen/clover/v2"
 )
 
 const (
 	pricingCollection = "productPrices"
+	dbSeedPathEnv     = "DB_SEED_PATH"
 )
 
 type productPriceDocument struct {
@@ -17,7 +20,6 @@ type productPriceDocument struct {
 }
 
 func InitDB() (*clover.DB, error) {
-	// TODO: Put location of DB in env variable?
 	db, err := clover.Open("db/pricing_database")
 	if err != nil {
 		return nil, err
@@ -28,7 +30,11 @@ func InitDB() (*clover.DB, error) {
 	if !exists {
 		err = seedDB(db)
 		if err != nil {
-			return nil, fmt.Errorf("failed to seed DB: %w", err)
+			log.Printf("error during seed: %s - creating empty collection...\n", err)
+			collectionErr := db.CreateCollection(pricingCollection)
+			if collectionErr != nil {
+				return nil, fmt.Errorf("error initializing collection - %w", collectionErr)
+			}
 		}
 	}
 
@@ -36,6 +42,10 @@ func InitDB() (*clover.DB, error) {
 }
 
 func seedDB(db *clover.DB) error {
-	// TODO: Put location of seed in env variable?
-	return db.ImportCollection(pricingCollection, "db/pricing-seed.json")
+	seedPath := os.Getenv(dbSeedPathEnv)
+	if seedPath == "" {
+		seedPath = "db/pricing-seed.json"
+		log.Printf("'%s' environment variable not set, attempting to seed with '%s'\n", dbSeedPathEnv, seedPath)
+	}
+	return db.ImportCollection(pricingCollection, seedPath)
 }

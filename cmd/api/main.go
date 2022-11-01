@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"strconv"
 
 	"github.com/austinvalle/rest-api-example/internal"
 	"github.com/go-chi/chi/v5"
@@ -11,12 +13,23 @@ import (
 	"github.com/go-chi/render"
 )
 
+const (
+	apiPortEnv  = "API_PORT"
+	defaultPort = 3000
+)
+
+func init() {
+	_, exists := os.LookupEnv(internal.ApiKeyEnv)
+	if !exists {
+		log.Fatalf("missing environment variable '%s' - exiting...", internal.ApiKeyEnv)
+	}
+}
+
 func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(render.SetContentType(render.ContentTypeJSON))
 
-	// TODO: handle error
 	db, err := internal.InitDB()
 	if err != nil {
 		log.Fatal(err.Error())
@@ -29,9 +42,23 @@ func main() {
 	r.Get("/products/{id:\\d+}", productEndpoint.getProductById)
 	r.Put("/products/{id:\\d+}/price", productEndpoint.updateProductPriceById)
 
-	// TODO: add env variable
-	port := 3000
-	fmt.Printf("API is running at http://localhost:%d\n", port)
+	port := getPort()
+	log.Printf("API is running at http://localhost:%d\n", port)
 
 	http.ListenAndServe(fmt.Sprintf(":%d", port), r)
+}
+
+func getPort() int {
+	portStr := os.Getenv(apiPortEnv)
+	if portStr == "" {
+		return defaultPort
+	}
+
+	port, err := strconv.Atoi(portStr)
+	if err != nil {
+		log.Printf("Invalid '%s' environment variable: %s - defaulting to '%d'", apiPortEnv, portStr, defaultPort)
+		return defaultPort
+	}
+
+	return port
 }

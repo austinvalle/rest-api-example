@@ -11,7 +11,7 @@ import (
 
 const (
 	externalUrl = "https://redsky-uat.perf.target.com/redsky_aggregations/v1/redsky/case_study_v1?key=%s&tcin=%s"
-	apiKeyEnv   = "EXTERNAL_API_KEY"
+	ApiKeyEnv   = "EXTERNAL_API_KEY"
 )
 
 var ErrProductNotFound = errors.New("product data not found")
@@ -128,9 +128,9 @@ func parseApiError(resp *http.Response) error {
 }
 
 func getApiKey() (string, error) {
-	apiKey := os.Getenv(apiKeyEnv)
+	apiKey := os.Getenv(ApiKeyEnv)
 	if apiKey == "" {
-		return "", fmt.Errorf("no API key set in env variable '%s'", apiKeyEnv)
+		return "", fmt.Errorf("no API key set in env variable '%s'", ApiKeyEnv)
 	}
 
 	return apiKey, nil

@@ -28,3 +28,10 @@ set EXTERNAL_API_KEY=api.key.goes.here
 # Run the executable/binary
 api.exe
 ```
+
+## Environment variables
+- `EXTERNAL_API_KEY` - **required**
+- `DB_SEED_PATH` - *optional*
+    - Used to seed pricing data with a different JSON file/path, defaults to `db/pricing-seed.json`
+- `API_PORT` - *optional*
+    - Used to have API listen for HTTP requests on a specific port, defaults to `3000`
