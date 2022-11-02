@@ -40,7 +40,7 @@ func main() {
 	productEndpoint := productEndpoint{db: db}
 
 	r.Get("/products/{id:\\d+}", productEndpoint.getProductById)
-	r.Put("/products/{id:\\d+}/price", productEndpoint.updateProductPriceById)
+	r.Put("/products/{id:\\d+}", productEndpoint.updateProductPriceById)
 
 	port := getPort()
 	log.Printf("API is running at http://localhost:%d\n", port)

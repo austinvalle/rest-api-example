@@ -40,7 +40,7 @@ api.exe
 ## Testing the API
 There are two available API endpoints:
 - `GET` http://localhost:3000/products/{id}
-- `PUT` http://localhost:3000/products/{id}/price
+- `PUT` http://localhost:3000/products/{id}
     - **Request body example**
     ```json
     {
