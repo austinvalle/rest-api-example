@@ -49,7 +49,20 @@ There are two available API endpoints:
     }
     ```
 
-## Example output
+## Example testing
+```bash
+# GET on product ID that has a price in `cmd/api/db/pricing-seed.json`
+curl http://localhost:3000/products/13264003
+
+# GET on product ID that does not have a price in `cmd/api/db/pricing-seed.json`
+curl http://localhost:3000/products/12954218
+
+# PUT on product ID with new price
+curl -X PUT http://localhost:3000/products/12954218 -H "Content-Type: application/json" -d "{\"value\": 99.34, \"currency_code\": \"USD\"}" -v
+
+# GET on product ID returns the price from previous command ^
+curl http://localhost:3000/products/12954218
+```
 #### Client
 ![client](./images/client.png)
 
